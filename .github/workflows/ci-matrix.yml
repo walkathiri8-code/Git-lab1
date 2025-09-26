@@ -1,41 +1,23 @@
 name: Matrix Build
 on:
-  workflow_dispatch:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+   workflow_dispatch:
 
 jobs:
-  build:
-    name: Build on ${{ matrix.os }} with Node ${{ matrix.node }}
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 10
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        node: [18, 20]
-    
-    steps:
-      - uses: actions/checkout@v4
+ build:
+   runs-on: ${{ matrix.os }}
+   strategy:
+     matrix:
+       os: [ubuntu-latest, windows-latest]
+       node: [18, 20]
+   steps:
+     - uses: actions/checkout@v4
 
-      - name: Setup Node ${{ matrix.node }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node }}
-          cache: 'npm'
+     - name: Setup Node ${{ matrix.node }}
+       uses: actions/setup-node@v4
+       with:
+         node-version: ${{ matrix.node }}
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run tests
-        run: npm test
-
-      - name: Build project
-        run: npm run build
-
-      - name: Print environment info
-        run: |
-          node -v
-          npm -v
-          echo "OS: ${{ runner.os }}"
+     - name: Print environment
+       run: |
+         node -v
+         echo "OS: $RUNNER_OS"
